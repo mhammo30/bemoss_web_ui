@@ -217,10 +217,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    #'corsheaders',
-    #'smap',
-    #'powerdb2',
-    'lib.django_hstore',
     'apps.accounts',
     'zmq',
     'apps.dashboard',
