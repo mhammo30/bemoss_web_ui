@@ -1,0 +1,1434 @@
+ <!--
+ Copyright (c) 2016, Virginia Tech
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+  following conditions are met:
+ 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+ disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+ disclaimer in the documentation and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those of the authors and should not be
+ interpreted as representing official policies, either expressed or implied, of the FreeBSD Project.
+
+ This material was prepared as an account of work sponsored by an agency of the United States Government. Neither the
+ United States Government nor the United States Department of Energy, nor Virginia Tech, nor any of their employees,
+ nor any jurisdiction or organization that has cooperated in the development of these materials, makes any warranty,
+ express or implied, or assumes any legal liability or responsibility for the accuracy, completeness, or usefulness or
+ any information, apparatus, product, software, or process disclosed, or represents that its use would not infringe
+ privately owned rights.
+
+ Reference herein to any specific commercial product, process, or service by trade name, trademark, manufacturer, or
+ otherwise does not necessarily constitute or imply its endorsement, recommendation, favoring by the United States
+ Government or any agency thereof, or Virginia Tech - Advanced Research Institute. The views and opinions of authors
+ expressed herein do not necessarily state or reflect those of the United States Government or any agency thereof.
+
+ VIRGINIA TECH – ADVANCED RESEARCH INSTITUTE
+ under Contract DE-EE0006352
+
+ #__author__ = "BEMOSS Team"
+ #__credits__ = ""
+ #__version__ = "2.0"
+ #__maintainer__ = "BEMOSS Team"
+ #__email__ = "aribemoss@gmail.com"
+ #__website__ = "www.bemoss.org"
+ #__created__ = "2014-09-12 12:04:50"
+ #__lastUpdated__ = "2016-03-14 11:23:33" -->
+
+{% load dashboard_extras %}
+{% load switch_case %}
+{% load timedelta %}
+{% load device_count_in_zone %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Device Discovery</title>
+
+<meta http-equiv="refresh" content="100">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bootstrap -->
+<link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
+<link href="/static/css/thin-admin.css" rel="stylesheet" media="screen">
+<link href="/static/css/font-awesome.css" rel="stylesheet" media="screen">
+<link media="screen" rel="stylesheet" href="/static/font-awesome-4.0.3/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="/static/css/fam-icons/fam-icons.css">
+<link href="/static/style/style.css" rel="stylesheet">
+<link href="/static/css/alerts.css" rel="stylesheet">
+<link href="/static/css/demo_page.css" rel="stylesheet">
+<link href="/static/css/demo_table.css" rel="stylesheet">
+
+<link href="/static/css/bootstrap-notify/bootstrap-notify.css" rel="stylesheet">
+
+<!-- Custom Styles -->
+<link href="/static/css/bootstrap-notify/styles/alert-bangtidy.css" rel="stylesheet">
+<link href="/static/css/bootstrap-notify/styles/alert-blackgloss.css" rel="stylesheet">
+
+<script class="include" type="text/javascript" src="/static/javascript/jquery.min.js"></script>
+<script class="include" type="text/javascript" src="/static/app_js/jquery.csrftoken.js"></script>
+<script class="include" type="text/javascript" src="/static/app_js/jquery.csrftoken.min.js"></script>
+<!--[if IE]><script type="text/javascript" src="/static/assets/jqueryknobdial/excanvas.js"></script><![endif]-->
+
+</head>
+<body>
+<script type="text/javascript"> var username_exists='{{username_exists}}';</script>
+{% include 'top_nav.html' %}
+<div class="wrapper">
+{% include 'side_nav.html' %}
+  <div class="page-content" id="dashboard_content">
+    <form action="" method="post">
+  	{% csrf_token %}
+    <div class="content container">
+      <div class="row">
+        <div class="col-lg-12">
+          <h2 class="page-title">Discovered Devices</h2>
+        </div>
+      </div>
+
+
+    <!-- Manual Discovery end -->
+
+      <div class="row" id="new_devices">
+        <div class="col-lg-12">
+          <div class="widget">
+            <div class="widget-header"> <i class="icon-arrow-right"></i>
+              <h3>New Devices Discovered</h3>
+            </div>
+            <div class="widget-content">
+              <div class="tabbable tabs-left">
+                <ul class="nav nav-tabs" id="myTabLeft">
+                     <li class="active"><a data-toggle="tab" href="#thermostats">HVAC Controllers&nbsp;<span class="label label-warning pull-right" style="color:black;">{{ "hvac"|d_ct_all }}</span></a></li>
+                  <li class=""><a data-toggle="tab" href="#lightingloads">Lighting Load Controllers&nbsp;<span class="label label-warning pull-right" style="color:black;">{{ "light"|d_ct_all }}</span></a></li>
+                  <li class=""><a data-toggle="tab" href="#plugloads">Plugload Controllers&nbsp;<span class="label label-warning pull-right" style="color:black;">{{ "plug"|d_ct_all }}</span></a></li>
+                </ul>
+                <div class="tab-content" id="myTabContentLeft">
+                  <div id="thermostats" class="tab-pane fade active in">
+                      <div class="widget-content">
+        <div class="example_alt_pagination">
+              <div id="container">
+                <div class="full_width big"></div>
+          <div id="demo">
+
+            <table class="display example" id="thermostats_tbl">
+      <thead>
+        <tr>
+          <th class="col-md-1">Nickname</th>
+          <th class="col-md-2">Vendor</th>
+          <th class="col-md-1">Model</th>
+          <th class="col-md-2">MAC Address</th>
+          <th class="col-md-2">Date Added</th>
+          <th class="col-md-1">Identify Device</th>
+          <th class="col-md-2">Zone</th>
+          <th class="col-md-2">Approval Status {% if "hvac"|d_ct_all > 0 %}<button class="btn btn-xs btn-success" id="set_approve_th">Set all to 'Approved'</button> {% endif %} </th>
+
+        </tr>
+        </thead>
+      <tbody>
+
+      {% for thermostat in thermostats %}
+          {% if thermostat.network_status == 'Online' and thermostat.zone_id > 0 and thermostat.approval_status|lower == 'pending' %}
+        <tr {% if thermostat.device_model_id.device_model_id == '1TH' or thermostat.device_model_id.device_model_id == '1NST' or thermostat.device_model_id.device_model_id == '1HWT'  %}
+                class="gradeA"
+            {% endif %}
+            >
+          <td><input type="text" placeholder="{{ thermostat.nickname }}" id="nick-{{ thermostat.device_id }}" class="form-control" value="{{ thermostat.nickname }}"></td>
+          <td>{{ thermostat.vendor_name }}</td>
+          <td>{{ thermostat.device_model }}</td>
+          <td>{{ thermostat.mac_address }}</td>
+            <td>{{ thermostat.date_added }}</td>
+             <td>{% if thermostat.identifiable and thermostat.approval_status.lower == 'approved' %}
+                 <button class="btn btn-warning btn-xs identify"
+                         id="identify-{{ thermostat.device_id }}"><i class="icon-search" id="{{ thermostat.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="drop_zone-{{ thermostat.device_id }}-{{ thermostat.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="zone-{{ thermostat.device_id }}-{{ thermostat.device_model_id.device_model_id }}">{{ thermostat.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                           {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>
+            <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="drop_app_stat-{{ thermostat.device_id }}-{{ thermostat.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" class="app_stat_ths" id="app_stat-{{ thermostat.device_id }}-{{ thermostat.device_model_id.device_model_id }}">{{ thermostat.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="{{ thermostat.id }}-{{ thermostat.approval_status.lower.split|join:'_' }}">{{ thermostat.approval_status }}</a></li>
+                                {% for a_key, a_value in thermostat.approval_status_choices %}
+                                    {% ifnotequal a_value.lower thermostat.approval_status.lower %}
+                                        <li><a href="#" id="{{ thermostat.id }}-{{ thermostat.approval_status.lower.split|join:'_' }}" >{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+        </tr>
+          {% endif %}
+      {%  endfor  %}
+            {% for vav_this in vav %}
+         {% if vav_this.network_status == 'Online' and vav_this.zone_id > 0 and vav_this.approval_status|lower == 'pending' %}
+        <tr {% if vav_this.device_model_id.device_model_id == '1VAV' %}
+                class="gradeA"
+            {% endif %}
+            >
+          <td><input type="text" placeholder="{{ vav_this.nickname }}" id="nick-{{ vav_this.device_id }}" class="form-control" value="{{ vav_this.nickname }}"></td>
+          <td>{{ vav_this.vendor_name }}</td>
+          <td>{{ vav_this.device_model }}</td>
+          <td>{{ vav_this.mac_address }}</td>
+            <td>{{ vav_this.date_added }}</td>
+             <td>{% if vav_this.identifiable and vav_this.approval_status.lower == 'approved' %} <button class="btn btn-warning btn-xs identify"
+                         id="identify-{{ vav_this.device_id }}"><i class="icon-search" id="{{ vav_this.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="drop_zone-{{ vav_this.device_id }}-{{ vav_this.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="zone-{{ vav_this.device_id }}-{{ vav_this.device_model_id.device_model_id }}">{{ vav_this.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>
+            <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="drop_app_stat-{{ vav_this.device_id }}-{{ vav_this.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" class="app_stat_ths"  id="app_stat-{{ vav_this.device_id }}-{{ vav_this.device_model_id.device_model_id }}">{{ vav_this.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="{{ vav_this.id }}-{{ vav_this.approval_status.lower.split|join:'_' }}">{{ vav_this.approval_status }}</a></li>
+                                {% for a_key, a_value in vav_this.approval_status_choices %}
+                                    {% ifnotequal a_value.lower vav_this.approval_status.lower %}
+                                        <li><a href="#" id="{{ vav_this.id }}-{{ vav_this.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+        </tr>
+          {% endif %}
+      {%  endfor  %}
+            {% for rtu_this in rtu %}
+         {% if rtu_this.network_status == 'Online' and rtu_this.zone_id > 0 and rtu_this.approval_status|lower == 'pending' %}
+        <tr {% if rtu_this.device_model_id.device_model_id == '1RTU' %}
+                class="gradeA"
+            {% endif %}
+            >
+          <td><input type="text" placeholder="{{ rtu_this.nickname }}" id="nick-{{ rtu_this.device_id }}" class="form-control" value="{{ rtu_this.nickname }}"></td>
+          <td>{{ rtu_this.vendor_name }}</td>
+          <td>{{ rtu_this.device_model }}</td>
+          <td>{{ rtu_this.mac_address }}</td>
+            <td>{{ rtu_this.date_added }}</td>
+             <td>{% if rtu_this.identifiable and rtu_this.approval_status.lower == 'approved' %} <button class="btn btn-warning btn-xs identify"
+                         id="identify-{{ rtu_this.device_id }}"><i class="icon-search" id="{{ rtu_this.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="drop_zone-{{ rtu_this.device_id }}-{{ rtu_this.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="zone-{{ rtu_this.device_id }}-{{ rtu_this.device_model_id.device_model_id }}">{{ rtu_this.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>
+         <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="drop_app_stat-{{ rtu_this.device_id }}-{{ rtu_this.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" class="app_stat_ths"  id="app_stat-{{ rtu_this.device_id }}-{{ rtu_this.device_model_id.device_model_id }}">{{ rtu_this.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="{{ rtu_this.id }}-{{ vav_this.approval_status.lower.split|join:'_' }}">{{ rtu_this.approval_status }}</a></li>
+                                {% for a_key, a_value in rtu_this.approval_status_choices %}
+                                    {% ifnotequal a_value.lower rtu_this.approval_status.lower %}
+                                        <li><a href="#" id="{{ rtu_this.id }}-{{ rtu_this.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+        </tr>
+          {% endif %}
+      {%  endfor  %}
+        </tbody>
+      <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </tfoot>
+  </table>
+
+    </div>
+        </div>
+    </div>
+
+            </div><br/>
+                    <div class="row"><div class="col-lg-12">
+                  <div class="text-center">
+                    <button class="btn btn-primary" id="submit_thermostats" type="submit">Save Changes to HVAC Controllers</button>
+                    <button class="btn btn-default" type="button">Cancel</button>
+                  </div>
+                </div></div>
+                    </div>
+                  <div id="lightingloads" class="tab-pane fade">
+<div class="widget-content">
+<div class="example_alt_pagination">
+      <div id="container1">
+        <div class="full_width big"></div>
+  <div id="demo">
+    <table cellpadding="0" cellspacing="0" border="0" class="display example" id="lighting_tbl">
+      <thead>
+        <tr>
+          <th class="col-md-1">Nickname</th>
+          <th class="col-md-2">Vendor</th>
+          <th class="col-md-1">Model</th>
+          <th class="col-md-2">MAC Address</th>
+          <th class="col-md-2">Date Added</th>
+          <th class="col-md-1">Identify Device</th>
+          <th class="col-md-2">Zone</th>
+          <th class="col-md-2">Approval Status {% if "light"|d_ct_all > 0 %}<button class="btn btn-xs btn-success" id="set_approve_lt">Set all to 'Approved'</button> {% endif %}</th>
+        </tr>
+        </thead>
+      <tbody>
+      {% for lighting in lighting_loads %}
+          {% if lighting.network_status == 'Online' and lighting.zone_id > 0 and lighting.approval_status|lower == 'pending' %}
+        <tr {% if lighting.device_model_id.device_model_id == '2HUE' or lighting.device_model_id.device_model_id == '2DB' or lighting.device_model_id.device_model_id == '2SDB' or lighting.device_model_id.device_model_id == '2WSL' or lighting.device_model_id.device_model_id == '2WL' %}
+                class="gradeA"
+            {% endif %}
+            >
+          <td><input type="text" placeholder="{{ lighting.nickname }}" id="nick-{{ lighting.device_id }}" class="form-control" value="{{ lighting.nickname }}"></td>
+          <td>{{ lighting.vendor_name }}</td>
+          <td>{{ lighting.device_model }}</td>
+          <td>{{ lighting.mac_address }}</td>
+            <td>{{ lighting.date_added }}</td>
+             <td>{% if lighting.identifiable  %}
+                    {% if lighting.device_model_id.device_model_id == '2HUE' and username_exists == 'no' %}  <button class="btn btn-warning btn-xs"
+                         data-backdrop="false" data-target="#{{ lighting.device_id }}" data-toggle="modal" id="identify-{{ lighting.device_id }}" name ="hue_auth">
+                     <i class="icon-search" id="{{ lighting.device_id }}-spin"></i>
+                         Get Username</button>{% endif %}
+
+                    <div style="display: none;" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" id="{{ lighting.device_id }}">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+                        <h4 id="myModalLabel" class="modal-title">Information</h4>
+                      </div>
+                      <div class="modal-body">
+                          <p class = "attribution">Please click the Authenticate button below and then go to the Philips Hue Hub to press the button on it.</p>
+                          <br>
+                          <center><img src="/static/images/pair-bridge.png" alt="pic4instruction" width = "165" height="192"></center>
+                          <br>
+                          <p class = "attribution">After you click 'Authenticate', please click the button on hub within 30 second.</p>
+                          <br>
+                          <p class = "attribution">If the process is not success, please try again.</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                          {% ifequal request.user.get_profile.group.name|lower  'admin' %}
+                        <button data-dismiss="modal" class="btn btn-primary auth_hue" id="#auth_hue-{{ lighting.device_id }}" type="button">Authenticate</button>
+                          {% endifequal %}
+                      </div>
+                    </div>l
+                    <!-- /.modal-content -->
+                  </div>
+                  <!-- /.modal-dialog -->
+                </div>
+
+
+                    {% if lighting.device_model_id.device_model_id != '2HUE' and lighting.approval_status.lower == 'approved' %}  <button class="btn btn-warning btn-xs identify"
+                         id="identify-{{ lighting.device_id }}"><i class="icon-search" id="{{ lighting.device_id }}-spin"></i>
+                         Identify Device</button>{% endif %}
+                    {% endif %}</td>
+            <td> <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="drop_zone-{{ lighting.device_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="zone-{{ lighting.device_id }}">{{ lighting.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>
+        <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+
+                         <button type="button" id="drop_app_stat-{{ lighting.device_id }}-{{ lighting.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" class="app_stat_lt" id="app_stat-{{ lighting.device_id }}-{{ lighting.device_model_id.device_model_id }}">{{ lighting.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="{{ lighting.id }}-{{ lighting.approval_status.lower.split|join:'_' }}">{{ lighting.approval_status }}</a></li>
+                                {% for a_key, a_value in lighting.approval_status_choices %}
+                                    {% ifnotequal a_value.lower lighting.approval_status.lower %}
+                                        {% if lighting.device_model_id.device_model_id == '2HUE' and username_exists != 'no' or lighting.device_model_id.device_model_id != '2HUE'%}
+                                        <li><a href="#" id="{{ lighting.id }}-{{ lighting.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                        {% elif lighting.device_model_id.device_model_id == '2HUE' and username_exists == 'no' and a_value.lower != 'approved' %}
+                                        <li><a href="#" id="{{ lighting.id }}-{{ lighting.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                        {% endif %}
+                                    {% endifnotequal %}
+                                {% endfor %}
+                         </ul>
+
+                     </div>
+                  </div>
+                </td>
+        </tr>
+          {% endif %}
+      {%  endfor  %}
+        </tbody>
+      <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </tfoot>
+  </table>
+
+    </div>
+        </div>
+    </div>
+
+            </div><br/>
+                    <div class="col-lg-12">
+                  <div class="text-center">
+                    <button class="btn btn-primary" id="submit_lighting" type="submit">Save Changes to Lighting Load Controllers</button>
+                    <button class="btn btn-default" type="button">Cancel</button>
+                  </div>
+                </div>
+                  </div>
+                  <div id="plugloads" class="tab-pane fade">
+                    <div class="widget-content">
+<div class="example_alt_pagination">
+      <div id="container">
+        <div class="full_width big"></div>
+  <div id="demo">
+    <table cellpadding="0" cellspacing="0" border="0" class="display example" id="plugload_tbl">
+      <thead>
+        <tr>
+          <th class="col-md-1">Nickname</th>
+          <th class="col-md-2">Vendor</th>
+          <th class="col-md-1">Model</th>
+          <th class="col-md-2">MAC Address</th>
+          <th class="col-md-2">Date Added</th>
+          <th class="col-md-1">Identify Device</th>
+          <th class="col-md-2">Zone</th>
+          <th class="col-md-2">Approval Status {% if "plug"|d_ct_all > 0 %}<button class="btn btn-xs btn-success" id="set_approve_plug">Set all to 'Approved'</button> {% endif %}</th>
+        </tr>
+        </thead>
+      <tbody>
+
+      {% for plugload in plugloads %}
+          {% if plugload.network_status == 'Online' and plugload.zone_id > 0 and plugload.approval_status|lower == 'pending' %}
+        <tr {% if plugload.device_model_id.device_model_id == '3WSP' or plugload.device_model_id.device_model_id == '3WP' or plugload.device_model_id.device_model_id == '3WIS' or plugload.device_model_id.device_model_id == '3VTH' or plugload.device_model_id.device_model_id == '3DSP' %}
+                class="gradeA"
+            {% endif %}
+            >
+          <td><input type="text" placeholder="{{ plugload.nickname }}" id="nick-{{ plugload.device_id }}" class="form-control" value="{{ plugload.nickname }}"></td>
+          <td>{{ plugload.vendor_name }}</td>
+          <td>{{ plugload.device_model }}</td>
+          <td>{{ plugload.mac_address }}</td>
+            <td>{{ plugload.date_added }}</td>
+             <td>{% if plugload.identifiable and plugload.approval_status.lower == 'approved' %} <button class="btn btn-warning btn-xs identify"
+                         id="identify-{{ plugload.device_id }}"><i class="icon-search" id="{{ plugload.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back">
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="drop_zone-{{ plugload.device_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="zone-{{ plugload.device_id }}">{{ plugload.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>
+        <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="drop_app_stat-{{ plugload.device_id }}-{{ plugload.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" class="app_stat_plug" id="app_stat-{{ plugload.device_id }}-{{ plugload.device_model_id.device_model_id }}">{{ plugload.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="{{ plugload.id }}-{{ plugload.approval_status.lower.split|join:'_' }}">{{ plugload.approval_status }}</a></li>
+                                {% for a_key, a_value in plugload.approval_status_choices %}
+                                    {% ifnotequal a_value.lower plugload.approval_status.lower %}
+                                        <li><a href="#" id="{{ plugload.id }}-{{ plugload.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+        </tr>
+          {% endif %}
+      {%  endfor  %}
+        </tbody>
+      <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </tfoot>
+  </table>
+
+    </div>
+        </div>
+    </div>
+
+            </div><br/>
+                    <div class="col-lg-12">
+                  <div class="text-center">
+                    <button class="btn btn-primary" id="submit_plugloads" type="submit">Save Changes to Plugload Controllers</button>
+                    <button class="btn btn-default" type="button">Cancel</button>
+                  </div>
+                </div>
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    <div class="row">
+        <div class="col-lg-12">
+          <div class="widget">
+            <div class="widget-header"> <i class="icon-arrow-right"></i>
+              <h3>Manage BEMOSS Devices</h3>
+            </div>
+            <div class="widget-content">
+              <div class="tabbable tabs-left">
+                <ul class="nav nav-tabs" id="myTabLeft">
+
+
+                     <li class="active"><a data-toggle="tab" href="#thermostats_m">HVAC Controllers &nbsp;<span class="label label-primary pull-right">{{ "hvac"|md_ct }}</span></a></li>
+                  <li class=""><a data-toggle="tab" href="#lightingloads_m">Lighting Load Controllers&nbsp;<span class="label label-primary pull-right" >{{ "light"|md_ct }}</span></a></li>
+                  <li class=""><a data-toggle="tab" href="#plugloads_m">Plugload Controllers&nbsp;<span class="label label-primary pull-right" >{{ "plug"|md_ct }}</span></a></li>
+                </ul>
+                <div class="tab-content" id="myTabContentLeft">
+                  <div id="thermostats_m" class="tab-pane active in">
+                      <div class="widget-content">
+        <div class="example_alt_pagination">
+              <div id="container">
+                <div class="full_width big"></div>
+          <div id="demo">
+            <table class="display example" id="thermostats_tblm">
+      <thead>
+        <tr>
+            <th></th>
+          <th class="col-md-1">Nickname</th>
+          <th class="col-md-2">Vendor</th>
+          <th class="col-md-1">Model</th>
+          <th class="col-md-2">MAC Address</th>
+          <th class="col-md-2">Date Added</th>
+          <th class="col-md-1">Identify Device</th>
+          <th class="col-md-2">Zone</th>
+          <th class="col-md-2">Approval Status</th>
+        </tr>
+        </thead>
+      <tbody>
+
+      {% for thermostat in thermostats %}
+          {% if thermostat.network_status|capfirst == 'Online' and thermostat.approval_status|lower == 'approved' %}
+        <tr {% if thermostat.device_model_id.device_model_id == '1TH' or thermostat.device_model_id.device_model_id == '1NST' or thermostat.device_model_id.device_model_id == '1HWT'  %}
+                class="gradeA"
+            {% endif %}
+            >
+      <!--  The checkbox below is now changed to checked as default status -->
+        <td class="text-center"><input type="checkbox" value="" checked id="modify_{{ thermostat.device_id }}" name="modify_device"></td>
+          <td><input type="text" placeholder="{{ thermostat.nickname }}" id="mnick-{{ thermostat.device_id }}" class="form-control" value="{{ thermostat.nickname }}"></td>
+          <td>{{ thermostat.vendor_name }}</td>
+          <td>{{ thermostat.device_model }}</td>
+          <td>{{ thermostat.mac_address }}</td>
+            <td>{{ thermostat.date_added }}</td>
+             <td>{% if thermostat.identifiable %}<button class="btn btn-warning btn-xs identify"
+                         id="midentify-{{ thermostat.device_id }}"><i class="icon-search" id="{{ thermostat.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_zone-{{ thermostat.device_id }}-{{ thermostat.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mzone-{{ thermostat.device_id }}-{{ thermostat.device_model_id.device_model_id }}">{{ thermostat.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>
+         <td>
+
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_app_stat-{{ thermostat.device_id }}-{{ thermostat.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mapp_stat-{{ thermostat.device_id }}-{{ thermostat.device_model_id.device_model_id }}">{{ thermostat.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="m_{{ thermostat.id }}-{{ thermostat.approval_status.lower.split|join:'_' }}">{{ thermostat.approval_status }}</a></li>
+                                {% for a_key, a_value in thermostat.approval_status_choices %}
+                                    {% ifnotequal a_value.lower thermostat.approval_status.lower %}
+                                        <li><a href="#" id="m_{{ thermostat.id }}-{{ thermostat.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+            </tr>
+          {% endif %}
+      {%  endfor  %}
+            {% for vav_this in vav %}
+          {% if vav_this.network_status|capfirst == 'Online' and vav_this.approval_status|lower == 'approved'  %}
+        <tr {% if vav_this.device_model_id.device_model_id == '1VAV' %}
+                class="gradeA"
+            {% endif %}
+            >
+        <td class="text-center"><input type="checkbox" value="" checked id="modify_{{ vav_this.device_id }}" name="modify_device"></td>
+          <td><input type="text" placeholder="{{ vav_this.nickname }}" id="mnick-{{ vav_this.device_id }}" class="form-control" value="{{ vav_this.nickname }}"></td>
+          <td>{{ vav_this.vendor_name }}</td>
+          <td>{{ vav_this.device_model }}</td>
+          <td>{{ vav_this.mac_address }}</td>
+            <td>{{ vav_this.date_added }}</td>
+             <td>{% if vav_this.identifiable %}<button class="btn btn-warning btn-xs identify"
+                         id="midentify-{{ vav_this.device_id }}"><i class="icon-search" id="{{ vav_this.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_zone-{{ vav_this.device_id }}-{{ vav_this.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mzone-{{ vav_this.device_id }}-{{ vav_this.device_model_id.device_model_id }}">{{ vav_this.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>
+        <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_app_stat-{{ vav_this.device_id }}-{{ vav_this.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mapp_stat-{{ vav_this.device_id }}-{{ vav_this.device_model_id.device_model_id }}">{{ vav_this.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="m_{{ vav_this.id }}-{{ vav_this.approval_status.lower.split|join:'_' }}">{{ vav_this.approval_status }}</a></li>
+                                {% for a_key, a_value in vav_this.approval_status_choices %}
+                                    {% ifnotequal a_value.lower vav_this.approval_status.lower %}
+                                        <li><a href="#" id="m_{{ vav_this.id }}-{{ vav_this.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+            </tr>
+          {% endif %}
+      {%  endfor  %}
+            {% for rtu_this in rtu %}
+          {% if rtu_this.network_status|capfirst == 'Online' and rtu_this.approval_status|lower == 'approved'  %}
+        <tr {% if rtu_this.device_model_id.device_model_id == '1RTU' %}
+                class="gradeA"
+            {% endif %}
+            >
+        <td class="text-center"><input type="checkbox" value="" checked id="modify_{{ rtu_this.device_id }}" name="modify_device"></td>
+          <td><input type="text" placeholder="{{ rtu_this.nickname }}" id="mnick-{{ rtu_this.device_id }}" class="form-control" value="{{ rtu_this.nickname }}"></td>
+          <td>{{ rtu_this.vendor_name }}</td>
+          <td>{{ rtu_this.device_model }}</td>
+          <td>{{ rtu_this.mac_address }}</td>
+            <td>{{ rtu_this.date_added }}</td>
+             <td>{% if rtu_this.identifiable %}<button class="btn btn-warning btn-xs identify"
+                         id="midentify-{{ rtu_this.device_id }}"><i class="icon-search" id="{{ rtu_this.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_zone-{{ rtu_this.device_id }}-{{ rtu_this.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mzone-{{ rtu_this.device_id }}-{{ rtu_this.device_model_id.device_model_id }}">{{ rtu_this.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>
+
+        <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_app_stat-{{ rtu_this.device_id }}-{{ rtu_this.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mapp_stat-{{ rtu_this.device_id }}-{{ rtu_this.device_model_id.device_model_id }}">{{ rtu_this.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="m_{{ rtu_this.id }}-{{ rtu_this.approval_status.lower.split|join:'_' }}">{{ rtu_this.approval_status }}</a></li>
+                                {% for a_key, a_value in rtu_this.approval_status_choices %}
+                                    {% ifnotequal a_value.lower rtu_this.approval_status.lower %}
+                                        <li><a href="#" id="m_{{ rtu_this.id }}-{{ rtu_this.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+            </tr>
+          {% endif %}
+      {%  endfor  %}
+        </tbody>
+      <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </tfoot>
+  </table>
+
+    </div>
+        </div>
+    </div>
+
+            </div><br/>
+                  <div class="col-lg-12">
+                      <div class="text-center">
+                          Please select devices to be modified using the checkbox on the left, and then click Modify button to save.
+                      </div>
+                  </div> <br/>
+                    <div class="col-lg-12">
+                  <div class="text-center">
+                    <button class="btn btn-primary" id="modify_thermostats" type="submit">Modify Selected HVAC Controllers</button>
+                    <button class="btn btn-default" type="button">Cancel</button>
+                  </div>
+                </div>
+                    </div>
+                  <div id="lightingloads_m" class="tab-pane fade">
+<div class="widget-content">
+<div class="example_alt_pagination">
+      <div id="container1">
+        <div class="full_width big"></div>
+  <div id="demo">
+    <table cellpadding="0" cellspacing="0" border="0" class="display example" id="lighting_tblm">
+      <thead>
+        <tr>
+            <th class="col-md-1"></th>
+          <th class="col-md-1">Nickname</th>
+          <th class="col-md-2">Vendor</th>
+          <th class="col-md-1">Model</th>
+          <th class="col-md-2">MAC Address</th>
+          <th class="col-md-2">Date Added</th>
+          <th class="col-md-1">Identify Device</th>
+          <th class="col-md-2">Zone</th>
+          <th class="col-md-2">Approval Status</th>
+        </tr>
+        </thead>
+      <tbody>
+      {% for lighting in lighting_loads %}
+          {% if lighting.network_status|capfirst == 'Online' and lighting.approval_status|lower == 'approved'  %}
+        <tr {% if lighting.device_model_id.device_model_id == '2HUE' or lighting.device_model_id.device_model_id == '2DB' or lighting.device_model_id.device_model_id == '2SDB' or lighting.device_model_id.device_model_id == '2WSL' or lighting.device_model_id.device_model_id == '2WL' %}
+                class="gradeA"
+            {% endif %}
+            >
+        <td class="text-center"><input type="checkbox" value="" checked id="modify_{{ lighting.device_id }}" name="modify_device"></td>
+          <td><input type="text" placeholder="{{ lighting.nickname }}" id="mnick-{{ lighting.device_id }}" class="form-control" value="{{ lighting.nickname }}"></td>
+          <td>{{ lighting.vendor_name }}</td>
+          <td>{{ lighting.device_model }}</td>
+          <td>{{ lighting.mac_address }}</td>
+            <td>{{ lighting.date_added }}</td>
+             <td>{% if lighting.identifiable %}<button class="btn btn-warning btn-xs identify"
+                         id="midentify-{{ lighting.device_id }}"><i class="icon-search" id="{{ lighting.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_zone-{{ lighting.device_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mzone-{{ lighting.device_id }}">{{ lighting.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>
+        <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_app_stat-{{ lighting.device_id }}-{{ lighting.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mapp_stat-{{ lighting.device_id }}-{{ lighting.device_model_id.device_model_id }}">{{ lighting.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="m_{{ lighting.id }}-{{ lighting.approval_status.lower.split|join:'_' }}">{{ lighting.approval_status }}</a></li>
+                                {% for a_key, a_value in lighting.approval_status_choices %}
+                                    {% ifnotequal a_value.lower lighting.approval_status.lower %}
+                                        <li><a href="#" id="m_{{ lighting.id }}-{{ lighting.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+         </tr>
+          {% endif %}
+      {%  endfor  %}
+        </tbody>
+      <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+            <th></th>
+          <th></th>
+            <th></th>
+                        <th></th>
+          </tr>
+        </tfoot>
+  </table>
+
+    </div>
+        </div>
+    </div>
+
+            </div><br/><div class="col-lg-12">
+                      <div class="text-center">
+                          Please select devices to be modified using the checkbox on the left, and then click Modify button to save.
+                      </div>
+                  </div> <br/>
+                    <div class="col-lg-12">
+                  <div class="text-center">
+                    <button class="btn btn-primary" id="modify_lightingloads" type="submit">Modify Selected Lighting Load Controllers</button>
+                    <button class="btn btn-default" type="button">Cancel</button>
+                  </div>
+                </div>
+                  </div>
+                  <div id="plugloads_m" class="tab-pane fade">
+                    <div class="widget-content">
+<div class="example_alt_pagination">
+      <div id="container">
+        <div class="full_width big"></div>
+  <div id="demo">
+    <table cellpadding="0" cellspacing="0" border="0" class="display example" id="plugload_tblm">
+      <thead>
+        <tr>
+          <th class="col-md-1"></th>
+          <th class="col-md-1">Nickname</th>
+          <th class="col-md-2">Vendor</th>
+          <th class="col-md-1">Model</th>
+          <th class="col-md-2">MAC Address</th>
+          <th class="col-md-2">Date Added</th>
+          <th class="col-md-1">Identify Device</th>
+          <th class="col-md-2">Zone</th>
+          <th class="col-md-2">Approval Status</th>
+        </tr>
+        </thead>
+      <tbody>
+
+      {% for plugload in plugloads %}
+          {% if plugload.network_status == 'Online' and plugload.approval_status|lower == 'approved' %}
+        <tr {% if plugload.device_model_id.device_model_id == '3WSP' or plugload.device_model_id.device_model_id == '3WP' or plugload.device_model_id.device_model_id == '3VTH' or plugload.device_model_id.device_model_id == '3DSP' %}
+                class="gradeA"
+            {% endif %}
+            >
+        <td class="text-center"><input type="checkbox" value="" checked id="modify_{{ plugload.device_id }}" name="modify_device"></td>
+          <td><input type="text" placeholder="{{ plugload.nickname }}" id="mnick-{{ plugload.device_id }}" class="form-control" value="{{ plugload.nickname }}"></td>
+          <td>{{ plugload.vendor_name }}</td>
+          <td>{{ plugload.device_model }}</td>
+          <td>{{ plugload.mac_address }}</td>
+            <td>{{ plugload.date_added }}</td>
+             <td>{% if plugload.identifiable %}<button class="btn btn-warning btn-xs identify"
+                         id="midentify-{{ plugload.device_id }}"><i class="icon-search" id="{{ plugload.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back">
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_zone-{{ plugload.device_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mzone-{{ plugload.device_id }}">{{ plugload.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>
+        <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_app_stat-{{ plugload.device_id }}-{{ plugload.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mapp_stat-{{ plugload.device_id }}-{{ plugload.device_model_id.device_model_id }}">{{ plugload.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="m_{{ plugload.id }}-{{ plugload.approval_status.lower.split|join:'_' }}">{{ plugload.approval_status }}</a></li>
+                                {% for a_key, a_value in plugload.approval_status_choices %}
+                                    {% ifnotequal a_value.lower plugload.approval_status.lower %}
+                                        <li><a href="#" id="m_{{ plugload.id }}-{{ plugload.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+        </tr>
+          {% endif %}
+      {%  endfor  %}
+        </tbody>
+      <tfoot>
+        <tr>
+          <th></th>
+            <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+            <th></th>
+            <th></th>
+                        <th></th>
+          </tr>
+        </tfoot>
+  </table>
+
+    </div>
+        </div>
+    </div>
+
+            </div><br/><div class="col-lg-12">
+                      <div class="text-center">
+                          Please select devices to be modified using the checkbox on the left, and then click Modify button to save.
+                      </div>
+                  </div> <br/>
+                    <div class="col-lg-12">
+                  <div class="text-center">
+                    <button class="btn btn-primary" id="modify_plugloads" type="submit">Modify Selected Plugload Controllers</button>
+                    <button class="btn btn-default" type="button">Cancel</button>
+                  </div>
+                </div>
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+          <div class="widget">
+            <div class="widget-header"> <i class="icon-arrow-right"></i>
+              <h3>Non-BEMOSS Devices</h3>
+            </div>
+            <div class="widget-content">
+              <div class="tabbable tabs-left">
+                <ul class="nav nav-tabs" id="myTabLeft">
+
+
+                     <li class="active"><a data-toggle="tab" href="#thermostats_nbd">HVAC Controllers &nbsp;<span class="label label-primary pull-right">{{ "hvac"|nbd_ct }}</span></a></li>
+                  <li class=""><a data-toggle="tab" href="#lightingloads_nbd">Lighting Load Controllers&nbsp;<span class="label label-primary pull-right" >{{ "light"|nbd_ct }}</span></a></li>
+                  <li class=""><a data-toggle="tab" href="#plugloads_nbd">Plugload Controllers&nbsp;<span class="label label-primary pull-right" >{{ "plug"|nbd_ct }}</span></a></li>
+                </ul>
+                <div class="tab-content" id="myTabContentLeft">
+                  <div id="thermostats_nbd" class="tab-pane active in">
+                      <div class="widget-content">
+        <div class="example_alt_pagination">
+              <div id="container">
+                <div class="full_width big"></div>
+          <div id="demo">
+            <table class="display example" id="thermostats_tblnbd">
+      <thead>
+        <tr>
+            <th></th>
+          <th class="col-md-2">Nickname</th>
+          <th class="col-md-2">Vendor</th>
+          <th class="col-md-2">Model</th>
+          <th class="col-md-2">MAC Address</th>
+          <th class="col-md-2">Date Added</th>
+          <!--<th class="col-md-1">Identify Device</th>
+          <th class="col-md-2">Zone</th>-->
+          <th class="col-md-2">Approval Status</th>
+        </tr>
+        </thead>
+      <tbody>
+
+      {% for thermostat in thermostats %}
+          {% if thermostat.network_status|capfirst == 'Online' and thermostat.approval_status|lower == 'non-bemoss device' %}
+        <tr {% if thermostat.device_model_id.device_model_id == '1TH' or thermostat.device_model_id.device_model_id == '1NST' or thermostat.device_model_id.device_model_id == '1HWT' %}
+                class="gradeA"
+            {% endif %}
+            >
+        <td class="text-center"><input type="checkbox" value="" checked id="modifynbd_{{ thermostat.device_id }}" name="modify_device"></td>
+          <td><input type="text" placeholder="{{ thermostat.nickname }}" id="nbdnick-{{ thermostat.device_id }}" class="form-control" value="{{ thermostat.nickname }}"></td>
+          <td>{{ thermostat.vendor_name }}</td>
+          <td>{{ thermostat.device_model }}</td>
+          <td>{{ thermostat.mac_address }}</td>
+            <td>{{ thermostat.date_added }}</td>
+             <!--<td>{% if thermostat.identifiable %}<button class="btn btn-warning btn-xs identify"
+                         id="midentify-{{ thermostat.device_id }}"><i class="icon-search" id="{{ thermostat.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;" >
+                         <button type="button" id="mdrop_zone-{{ thermostat.device_id }}-{{ thermostat.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mzone-{{ thermostat.device_id }}-{{ thermostat.device_model_id.device_model_id }}">{{ thermostat.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu" disabled>
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>-->
+         <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="nbddrop_app_stat-{{ thermostat.device_id }}-{{ thermostat.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="nbdapp_stat-{{ thermostat.device_id }}-{{ thermostat.device_model_id.device_model_id }}">{{ thermostat.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="nbd_{{ thermostat.id }}-{{ thermostat.approval_status.lower.split|join:'_' }}">{{ thermostat.approval_status }}</a></li>
+                                {% for a_key, a_value in thermostat.approval_status_choices %}
+                                    {% ifnotequal a_value.lower thermostat.approval_status.lower %}
+                                        <li><a href="#" id="nbd_{{ thermostat.id }}-{{ thermostat.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+            </tr>
+          {% endif %}
+      {%  endfor  %}
+            {% for vav_this in vav %}
+          {% if vav_this.network_status|capfirst == 'Online' and vav_this.approval_status|lower == 'non-bemoss device'  %}
+        <tr {% if vav_this.device_model_id.device_model_id == '1VAV' %}
+                class="gradeA"
+            {% endif %}
+            >
+        <td class="text-center"><input type="checkbox" value="" checked id="modifynbd_{{ vav_this.device_id }}" name="modify_device"></td>
+          <td><input type="text" placeholder="{{ vav_this.nickname }}" id="nbdnick-{{ vav_this.device_id }}" class="form-control" value="{{ vav_this.nickname }}"></td>
+          <td>{{ vav_this.vendor_name }}</td>
+          <td>{{ vav_this.device_model }}</td>
+          <td>{{ vav_this.mac_address }}</td>
+            <td>{{ vav_this.date_added }}</td>
+             <!--<td>{% if vav_this.identifiable %}<button class="btn btn-warning btn-xs identify"
+                         id="midentify-{{ vav_this.device_id }}"><i class="icon-search" id="{{ vav_this.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_zone-{{ vav_this.device_id }}-{{ vav_this.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mzone-{{ vav_this.device_id }}-{{ vav_this.device_model_id.device_model_id }}">{{ vav_this.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>-->
+        <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="nbddrop_app_stat-{{ vav_this.device_id }}-{{ vav_this.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="nbdapp_stat-{{ vav_this.device_id }}-{{ vav_this.device_model_id.device_model_id }}">{{ vav_this.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="nbd_{{ vav_this.id }}-{{ vav_this.approval_status.lower.split|join:'_' }}">{{ vav_this.approval_status }}</a></li>
+                                {% for a_key, a_value in vav_this.approval_status_choices %}
+                                    {% ifnotequal a_value.lower vav_this.approval_status.lower %}
+                                        <li><a href="#" id="nbd_{{ vav_this.id }}-{{ vav_this.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+            </tr>
+          {% endif %}
+      {%  endfor  %}
+            {% for rtu_this in rtu %}
+          {% if rtu_this.network_status|capfirst == 'Online' and rtu_this.approval_status|lower == 'non-bemoss device'  %}
+        <tr {% if rtu_this.device_model_id.device_model_id == '1RTU' %}
+                class="gradeA"
+            {% endif %}
+            >
+        <td class="text-center"><input type="checkbox" value="" checked id="modifynbd_{{ rtu_this.device_id }}" name="modify_device"></td>
+          <td><input type="text" placeholder="{{ rtu_this.nickname }}" id="nbdnick-{{ rtu_this.device_id }}" class="form-control" value="{{ rtu_this.nickname }}"></td>
+          <td>{{ rtu_this.vendor_name }}</td>
+          <td>{{ rtu_this.device_model }}</td>
+          <td>{{ rtu_this.mac_address }}</td>
+            <td>{{ rtu_this.date_added }}</td>
+             <!--<td>{% if rtu_this.identifiable %}<button class="btn btn-warning btn-xs identify"
+                         id="midentify-{{ rtu_this.device_id }}"><i class="icon-search" id="{{ rtu_this.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_zone-{{ rtu_this.device_id }}-{{ rtu_this.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mzone-{{ rtu_this.device_id }}-{{ rtu_this.device_model_id.device_model_id }}">{{ rtu_this.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>-->
+
+        <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="nbddrop_app_stat-{{ rtu_this.device_id }}-{{ rtu_this.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="nbdapp_stat-{{ rtu_this.device_id }}-{{ rtu_this.device_model_id.device_model_id }}">{{ rtu_this.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="nbd_{{ rtu_this.id }}-{{ rtu_this.approval_status.lower.split|join:'_' }}">{{ rtu_this.approval_status }}</a></li>
+                                {% for a_key, a_value in rtu_this.approval_status_choices %}
+                                    {% ifnotequal a_value.lower rtu_this.approval_status.lower %}
+                                        <li><a href="#" id="nbd_{{ rtu_this.id }}-{{ rtu_this.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+            </tr>
+          {% endif %}
+      {%  endfor  %}
+        </tbody>
+      <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+
+          <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </tfoot>
+  </table>
+
+    </div>
+        </div>
+    </div>
+
+            </div><br/>
+                  <div class="col-lg-12">
+                      <div class="text-center">
+                          Please select devices to be modified using the checkbox on the left, and then click Modify button to save.
+                      </div>
+                  </div> <br/>
+                    <div class="col-lg-12">
+                  <div class="text-center">
+                    <button class="btn btn-primary" id="nbd_modify_thermostats" type="submit">Modify Selected HVAC Controllers</button>
+                    <button class="btn btn-default" type="button">Cancel</button>
+                  </div>
+                </div>
+                    </div>
+                  <div id="lightingloads_nbd" class="tab-pane fade">
+<div class="widget-content">
+<div class="example_alt_pagination">
+      <div id="container1">
+        <div class="full_width big"></div>
+  <div id="demo">
+    <table cellpadding="0" cellspacing="0" border="0" class="display example" id="lighting_tblnbd">
+      <thead>
+        <tr>
+            <th class="col-md-1"></th>
+          <th class="col-md-1">Nickname</th>
+          <th class="col-md-2">Vendor</th>
+          <th class="col-md-1">Model</th>
+          <th class="col-md-2">MAC Address</th>
+          <th class="col-md-2">Date Added</th>
+          <!--<th class="col-md-1">Identify Device</th>
+          <th class="col-md-2">Zone</th>-->
+          <th class="col-md-2">Approval Status</th>
+        </tr>
+        </thead>
+      <tbody>
+      {% for lighting in lighting_loads %}
+          {% if lighting.network_status|capfirst == 'Online' and lighting.approval_status|lower == 'non-bemoss device'  %}
+        <tr {% if lighting.device_model_id.device_model_id == '2HUE' or lighting.device_model_id.device_model_id == '2DB' or lighting.device_model_id.device_model_id == '2SDB' or lighting.device_model_id.device_model_id == '2WSL' or lighting.device_model_id.device_model_id == '2WL' %}
+                class="gradeA"
+            {% endif %}
+            >
+        <td class="text-center"><input type="checkbox" value="" checked id="modifynbd_{{ lighting.device_id }}" name="modify_device"></td>
+          <td><input type="text" placeholder="{{ lighting.nickname }}" id="nbdnick-{{ lighting.device_id }}" class="form-control" value="{{ lighting.nickname }}"></td>
+          <td>{{ lighting.vendor_name }}</td>
+          <td>{{ lighting.device_model }}</td>
+          <td>{{ lighting.mac_address }}</td>
+            <td>{{ lighting.date_added }}</td>
+            <!-- <td>{% if lighting.identifiable %}<button class="btn btn-warning btn-xs identify"
+                         id="midentify-{{ lighting.device_id }}"><i class="icon-search" id="{{ lighting.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_zone-{{ lighting.device_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mzone-{{ lighting.device_id }}">{{ lighting.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>-->
+        <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="nbddrop_app_stat-{{ lighting.device_id }}-{{ lighting.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="nbdapp_stat-{{ lighting.device_id }}-{{ lighting.device_model_id.device_model_id }}">{{ lighting.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="nbd_{{ lighting.id }}-{{ lighting.approval_status.lower.split|join:'_' }}">{{ lighting.approval_status }}</a></li>
+                                {% for a_key, a_value in lighting.approval_status_choices %}
+                                    {% ifnotequal a_value.lower lighting.approval_status.lower %}
+                                        <li><a href="#" id="nbd_{{ lighting.id }}-{{ lighting.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+         </tr>
+          {% endif %}
+      {%  endfor  %}
+        </tbody>
+      <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+
+          <th></th>
+            <th></th>
+          </tr>
+        </tfoot>
+  </table>
+
+    </div>
+        </div>
+    </div>
+
+            </div><br/><div class="col-lg-12">
+                      <div class="text-center">
+                          Please select devices to be modified using the checkbox on the left, and then click Modify button to save.
+                      </div>
+                  </div> <br/>
+                    <div class="col-lg-12">
+                  <div class="text-center">
+                    <button class="btn btn-primary" id="nbd_modify_lightingloads" type="submit">Modify Selected Lighting Load Controllers</button>
+                    <button class="btn btn-default" type="button">Cancel</button>
+                  </div>
+                </div>
+                  </div>
+                  <div id="plugloads_nbd" class="tab-pane fade">
+                    <div class="widget-content">
+<div class="example_alt_pagination">
+      <div id="container">
+        <div class="full_width big"></div>
+  <div id="demo">
+    <table cellpadding="0" cellspacing="0" border="0" class="display example" id="plugload_tblnbd">
+      <thead>
+        <tr>
+          <th class="col-md-1"></th>
+          <th class="col-md-1">Nickname</th>
+          <th class="col-md-2">Vendor</th>
+          <th class="col-md-1">Model</th>
+          <th class="col-md-2">MAC Address</th>
+          <th class="col-md-2">Date Added</th>
+          <!--<th class="col-md-1">Identify Device</th>
+          <th class="col-md-2">Zone</th>-->
+          <th class="col-md-2">Approval Status</th>
+        </tr>
+        </thead>
+      <tbody>
+
+      {% for plugload in plugloads %}
+          {% if plugload.network_status == 'Online' and plugload.approval_status|lower == 'non-bemoss device' %}
+        <tr {% if plugload.device_model_id.device_model_id == '3WSP' or plugload.device_model_id.device_model_id == '3WP' or plugload.device_model_id.device_model_id == '3VTH' or plugload.device_model_id.device_model_id == '3DSP' %}
+                class="gradeA"
+            {% endif %}
+            >
+        <td class="text-center"><input type="checkbox" value="" checked id="modifynbd_{{ plugload.device_id }}" name="modify_device"></td>
+          <td><input type="text" placeholder="{{ plugload.nickname }}" id="nbdnick-{{ plugload.device_id }}" class="form-control" value="{{ plugload.nickname }}"></td>
+          <td>{{ plugload.vendor_name }}</td>
+          <td>{{ plugload.device_model }}</td>
+          <td>{{ plugload.mac_address }}</td>
+            <td>{{ plugload.date_added }}</td>
+             <!--<td>{% if plugload.identifiable %}<button class="btn btn-warning btn-xs identify"
+                         id="midentify-{{ plugload.device_id }}"><i class="icon-search" id="{{ plugload.device_id }}-spin"></i>
+                 Identify Device</button>{% endif %}</td>
+            <td> <div class="panel panel-back">
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="mdrop_zone-{{ plugload.device_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="mzone-{{ plugload.device_id }}">{{ plugload.zone_nickname }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                            {% for zone in zones %}
+                                <li><a href="#" id="{{ zone.id }}">{{ zone.zone_nickname }}</a></li>
+                            {% endfor %}
+                         </ul>
+                     </div>
+                  </div></td>-->
+        <td>
+                <div class="panel panel-back" >
+                       <div class="btn-group btn-input clearfix" style="margin-bottom: -10px; margin-top: 2px;">
+                         <button type="button" id="nbddrop_app_stat-{{ plugload.device_id }}-{{ plugload.device_model_id.device_model_id }}" class="btn btn-xs btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                           <span data-bind="label" id="nbdapp_stat-{{ plugload.device_id }}-{{ plugload.device_model_id.device_model_id }}">{{ plugload.approval_status }}</span>&nbsp;<span class="caret"></span>
+                         </button>
+                         <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="nbd_{{ plugload.id }}-{{ plugload.approval_status.lower.split|join:'_' }}">{{ plugload.approval_status }}</a></li>
+                                {% for a_key, a_value in plugload.approval_status_choices %}
+                                    {% ifnotequal a_value.lower plugload.approval_status.lower %}
+                                        <li><a href="#" id="nbd_{{ plugload.id }}-{{ plugload.approval_status.lower.split|join:'_' }}">{{ a_value }}</a></li>
+                                    {% endifnotequal %}
+
+                                {% endfor %}
+                         </ul>
+                     </div>
+                  </div>
+                </td>
+        </tr>
+          {% endif %}
+      {%  endfor  %}
+        </tbody>
+      <tfoot>
+        <tr>
+          <th></th>
+            <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+            <th></th>
+
+          </tr>
+        </tfoot>
+  </table>
+
+    </div>
+        </div>
+    </div>
+
+            </div><br/><div class="col-lg-12">
+                      <div class="text-center">
+                          Please select devices to be modified using the checkbox on the left, and then click Modify button to save.
+                      </div>
+                  </div> <br/>
+                    <div class="col-lg-12">
+                  <div class="text-center">
+                    <button class="btn btn-primary" id="nbd_modify_plugloads" type="submit">Modify Selected Plugload Controllers</button>
+                    <button class="btn btn-default" type="button">Cancel</button>
+                  </div>
+                </div>
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="bottom-nav footer"> 2013-2015 &copy; Building Energy Management Open Source Software. </div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/left_nav_slider.js"></script>
+           <script type="text/javascript" language="javascript" src="/static/js/jquery.js"></script>
+          <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready(function() {
+				$('.example').dataTable( {
+					"sPaginationType": "full_numbers",
+                    "oLanguage": {
+                        "sEmptyTable": "No devices currently found in this category."
+                        }
+				}
+				 );
+
+
+                var pathh = window.location.pathname;
+                pathh = pathh.slice(0, -1);
+                $('li a[href*="' + pathh + '"]').parent().parent().parent().addClass("current");
+			} );
+		</script>
+<script class="include" type="text/javascript" src="/static/app_js/jquery.csrftoken.min.js"></script>
+          <script class="include" type="text/javascript" src="/static/app_js/bootstrap-notify.js"></script>
+<script class="include" type="text/javascript" src="/static/app_js/discovery.js"></script>
+
+
+<!--switcher html start-->
+{% include 'theme_changer.html' %}
+
+</body>
+</html>
