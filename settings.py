@@ -207,7 +207,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    'lib.django_hstore',
     'apps.accounts',
     'zmq',
     'apps.dashboard',
