@@ -694,11 +694,13 @@ def zone_device_all_listing(request, zone_dev):
     #For the page
 
     thermostats = [ob.data_as_json() for ob in
-                   Thermostat.objects.filter(zone_id=zone_id, thermostat_id__approval_status='APR')]
+                   Thermostat.objects.filter(zone_id=zone_id, thermostat_id__approval_status='APR',
+                                                      network_status='ONLINE')]
     if len(thermostats) != 0:
         zone_nickname = thermostats[0]['zone']['zone_nickname']
 
-    rtu = [ob.as_json() for ob in RTU.objects.filter(zone_id=zone_id, rtu_id__approval_status='APR')]
+    rtu = [ob.as_json() for ob in RTU.objects.filter(zone_id=zone_id, rtu_id__approval_status='APR',
+                                                      network_status='ONLINE')]
     if len(rtu) != 0:
         zone_nickname = rtu[0]['zone']['zone_nickname']
 
