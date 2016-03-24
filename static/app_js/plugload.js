@@ -129,28 +129,6 @@ $( document ).ready(function() {
          }
      };
 
-    (function get_plugload_data(){
-	values = {
-		    "device_info": device_info
-		    };
-	var jsonText = JSON.stringify(values);
-	setTimeout(function()
-	{
-		$.ajax({
-		  url : '/plugload_stat/',
-		  type: 'POST',
-		  data: jsonText,
-		  dataType: 'json',
-		  success : function(data) {
-		  	//change_tstat_values(data);
-		  	get_plugload_data();
-		  },
-		  error: function(data) {
-			get_plugload_data();
-		  }
-		 });
-	},60000);
-	})();
 
     var popts = {
         lines: 12, // The number of lines to draw
