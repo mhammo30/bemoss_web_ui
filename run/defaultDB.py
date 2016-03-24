@@ -183,8 +183,8 @@ et1.save()
 et2 = EventTrigger(id=4, device_type_id=5, event_trigger_desc="Any BEMOSS Node Offline", event_trigger_id="BEMOSSOffline", event_trigger_class="desc_prio")
 et2.save()
 
-et2 = EventTrigger(id=5, device_type_id=5, event_trigger_desc="Any BEMOSS Device Offline", event_trigger_id="BEMOSSDeviceOffline", event_trigger_class="desc_prio")
-et2.save()
+et3 = EventTrigger(id=5, device_type_id=5, event_trigger_desc="Any BEMOSS Device Offline", event_trigger_id="BEMOSSDeviceOffline", event_trigger_class="desc_prio")
+et3.save()
 
 
 
