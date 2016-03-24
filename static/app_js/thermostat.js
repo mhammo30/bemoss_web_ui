@@ -381,30 +381,6 @@ function change_tstat_values(data) {
 	},3000000);
 	})();
 
-
-    (function get_thermostat_data(){
-	values = {
-		    "device_info": device_info
-		    };
-	var jsonText = JSON.stringify(values);
-	setTimeout(function()
-	{
-		$.ajax({
-		  url : '/thstat/',
-		  type: 'POST',
-		  data: jsonText,
-		  dataType: 'json',
-		  success : function(data) {
-		  	//change_tstat_values(data);
-		  	get_thermostat_data();
-		  },
-		  error: function(data) {
-			get_thermostat_data();
-		  }
-		 });
-	},60000);
-	})();
-
 $( "#submitthermostatdata" ).click(function(evt) {
 	evt.preventDefault();
 	update_time = new Date();
