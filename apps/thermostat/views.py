@@ -74,12 +74,34 @@ kwargs = {'subscribe_address': __.SUB_SOCKET,
              
 zmq_pub = zmqPub(**kwargs)
 
+def get_zip_code():
+    try:
+        location_info = urllib2.urlopen('http://ipinfo.io/json').read()
+        location_info_json = json.loads(location_info)
+        zipcode = location_info_json['postal'].encode('ascii', 'ignore')
+        return zipcode
+    except urllib2.HTTPError, e:
+        logger.error('HTTPError = ' + str(e.code))
+    except urllib2.URLError, e:
+        logger.error('URLError = ' + str(e.reason))
+    except httplib.HTTPException, e:
+        logger.error('HTTPException = ' + str(e.message))
+    except Exception:
+        import traceback
+        logger.error('generic exception: ' + traceback.format_exc())
+
 def get_weather_info():
     #Get current weather data from wunderground
     json_file = open(os.path.join(settings_tornado.PROJECT_DIR, 'resources/metadata/bemoss_metadata.json'), "r+")
     _json_data = json.load(json_file)
     zipcode = _json_data['building_location_zipcode']
     json_file.close()
+
+    # Get the zip according to your IP, if available:
+    ip_zipcode = get_zip_code()
+    # our default zip code is 22203, if we can obtain your location based on your IP, we will update it below.
+    if zipcode == '22203' and ip_zipcode is not None:
+        zipcode = ip_zipcode
 
     # Get weather underground service key
     wu_key = settings.WUNDERGROUND_KEY
