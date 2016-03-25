@@ -55,7 +55,7 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-     ('kruthika', 'kruthika@vt.edu'),
+     ('admin', 'example@email.com'),
 )
 
 PROJECT_DIR = os.path.dirname(__file__)
@@ -71,20 +71,11 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '',                    # Set to empty string for default. Not used with sqlite3.
     },
-    'smap': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'archiver',  # Or path to database file if using sqlite3.
-        'USER': 'admin',  # Not used with sqlite3.
-        'PASSWORD': 'admin',  # Not used with sqlite3.
-        'HOST': '127.0.0.1',
-        'PORT': '',
-    },
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/{{ docs_version }}/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['bemoss.com','localhost','38.68.232.107','127.0.0.1']
+ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -152,6 +143,10 @@ STATICFILES_FINDERS = (
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'TEMP_KEY'
+
+# Please provide Weather Underground Service Key below. If you don't have one, you can apply
+# one from here: https://www.wunderground.com/weather/api/
+WUNDERGROUND_KEY = ''
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
