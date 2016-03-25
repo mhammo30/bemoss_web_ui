@@ -63,6 +63,7 @@ import os
 import json
 import urllib2
 import logging
+import settings
 import settings_tornado
 import _utils.defaults as __
 
@@ -72,6 +73,79 @@ kwargs = {'subscribe_address': __.SUB_SOCKET,
                     'publish_address': __.PUSH_SOCKET}
              
 zmq_pub = zmqPub(**kwargs)
+
+def get_zip_code():
+    try:
+        location_info = urllib2.urlopen('http://ipinfo.io/json').read()
+        location_info_json = json.loads(location_info)
+        zipcode = location_info_json['postal'].encode('ascii', 'ignore')
+        return zipcode
+    except urllib2.HTTPError, e:
+        logger.error('HTTPError = ' + str(e.code))
+    except urllib2.URLError, e:
+        logger.error('URLError = ' + str(e.reason))
+    except httplib.HTTPException, e:
+        logger.error('HTTPException = ' + str(e.message))
+    except Exception:
+        import traceback
+        logger.error('generic exception: ' + traceback.format_exc())
+
+def get_weather_info():
+    #Get current weather data from wunderground
+    json_file = open(os.path.join(settings_tornado.PROJECT_DIR, 'resources/metadata/bemoss_metadata.json'), "r+")
+    _json_data = json.load(json_file)
+    zipcode = _json_data['building_location_zipcode']
+    json_file.close()
+
+    # Get the zip according to your IP, if available:
+    ip_zipcode = get_zip_code()
+    # our default zip code is 22203, if we can obtain your location based on your IP, we will update it below.
+    if zipcode == '22203' and ip_zipcode is not None:
+        zipcode = ip_zipcode
+
+    # Get weather underground service key
+    wu_key = settings.WUNDERGROUND_KEY
+
+    rs = {}
+    try:
+        rs = urllib2.urlopen("http://api.wunderground.com/api/" + wu_key + "/conditions/q/" + zipcode + ".json")
+    except urllib2.HTTPError, e:
+        logger.error('HTTPError = ' + str(e.code))
+    except urllib2.URLError, e:
+        logger.error('URLError = ' + str(e.reason))
+    except httplib.HTTPException, e:
+        logger.error('HTTPException = ' + str(e.message))
+    except Exception:
+        import traceback
+        logger.error('generic exception: ' + traceback.format_exc())
+    print rs
+    print zipcode
+
+    json_string = rs.read() if rs != {} else {}
+    try:
+        parsed_json = json.loads(json_string)
+        location = parsed_json['current_observation']['display_location']['full']
+        temp_f = parsed_json['current_observation']['temp_f']
+        humidity = parsed_json['current_observation']['relative_humidity']
+        precip = parsed_json['current_observation']['precip_1hr_in']
+        precip = precip if float(precip)>0 else '0.0'
+        winds = parsed_json['current_observation']['wind_mph']
+        icon = str(parsed_json['current_observation']['icon'])
+        weather = parsed_json['current_observation']['weather']
+    except Exception:
+        location = 'Arlington, VA (Default, please update settings)'
+        temp_f = '77'
+        humidity = '10%'
+        precip = '0.0'
+        winds = '1.0'
+        icon = 'mostlysunny'
+        weather = 'Sunny'
+
+    weather_icon = config_helper.get_weather_icon(icon)
+
+    weather_info = [location, temp_f, humidity, precip, winds, weather, weather_icon]
+
+    return weather_info
 
 @login_required(login_url='/login/')
 def thermostat(request, mac):
@@ -98,59 +172,7 @@ def thermostat(request, mac):
     vals = _helper.get_page_load_data(device_id, device_type, device_type_id)
     print vals
 
-    #Get current weather data from wunderground
-    json_file = open(os.path.join(settings_tornado.PROJECT_DIR, 'resources/metadata/bemoss_metadata.json'), "r+")
-    _json_data = json.load(json_file)
-    zipcode = _json_data['building_location_zipcode']
-    json_file.close()
-
-    #write code to get username from launchfile
-    #
-
-    rs = {}
-    try:
-        rs = urllib2.urlopen("http://api.wunderground.com/api/4fef576e26759640/conditions/q/" + zipcode + ".json")
-    except urllib2.HTTPError, e:
-        logger.error('HTTPError = ' + str(e.code))
-    except urllib2.URLError, e:
-        logger.error('URLError = ' + str(e.reason))
-    except httplib.HTTPException, e:
-        logger.error('HTTPException = ' + str(e.message))
-    except Exception:
-        import traceback
-        logger.error('generic exception: ' + traceback.format_exc())
-    print rs
-    print zipcode
-    if rs == {} :
-        location = 'Arlington, VA (Network unavailable - showing default values)    '
-        temp_f = '77'
-        humidity = '10%'
-        precip = '0.0'
-        winds = '1.0'
-        icon = 'mostlysunny'
-        weather = 'Sunny'
-    else:
-        json_string = rs.read()
-        try:
-            parsed_json = json.loads(json_string)
-            location = parsed_json['current_observation']['display_location']['full']
-            temp_f = parsed_json['current_observation']['temp_f']
-            humidity = parsed_json['current_observation']['relative_humidity']
-            precip = parsed_json['current_observation']['precip_1hr_in']
-            winds = parsed_json['current_observation']['wind_mph']
-            icon = str(parsed_json['current_observation']['icon'])
-            weather = parsed_json['current_observation']['weather']
-        except Exception:
-            location = 'Arlington, VA (Zipcode Error. Update settings/Contact Admin.)'
-            temp_f = '77'
-            humidity = '10%'
-            precip = '0.0'
-            winds = '1.0'
-            icon = 'mostlysunny'
-            weather = 'Sunny'
-
-    weather_icon = config_helper.get_weather_icon(icon)
-    print "icon "+weather_icon
+    weather_info = get_weather_info()
     device_list_side_nav = get_device_list_side_navigation()
     context.update(device_list_side_nav)
     active_al = get_notifications()
@@ -160,93 +182,28 @@ def thermostat(request, mac):
 
     return render_to_response(
         'thermostat/thermostat.html',
-        {'device_id': device_id, 'device_zone': device_zone, 'device_type_id': device_type_id, 'zone_nickname': zone_nickname, 'mac_address': mac,
-         'device_nickname': device_nickname, 'device_data': vals, 'location': location, 'temp_f': temp_f, 'humidity': humidity, 'precip': precip,
-         'winds': winds, 'override': override, 'hold':hold, 'weather_icon': weather_icon, 'weather': weather, 'mac': mac},
+        {'device_id': device_id, 'device_zone': device_zone, 'device_type_id': device_type_id,
+         'zone_nickname': zone_nickname, 'mac_address': mac, 'device_nickname': device_nickname, 'device_data': vals,
+         'location': weather_info[0], 'temp_f': weather_info[1], 'humidity': weather_info[2], 'precip': weather_info[3],
+         'winds': weather_info[4], 'override': override, 'hold':hold, 'weather_icon': weather_info[6],
+         'weather': weather_info[5], 'mac': mac},
         context)
-
-
-def get_zip_code():
-    try:
-        location_info = urllib2.urlopen('http://ipinfo.io/json').read()
-        location_info_json = json.loads(location_info)
-        zipcode = location_info_json['postal'].encode('ascii', 'ignore')
-        return zipcode
-    except urllib2.HTTPError, e:
-        logger.error('HTTPError = ' + str(e.code))
-    except urllib2.URLError, e:
-        logger.error('URLError = ' + str(e.reason))
-    except httplib.HTTPException, e:
-        logger.error('HTTPException = ' + str(e.message))
-    except Exception:
-        import traceback
-        logger.error('generic exception: ' + traceback.format_exc())
 
 
 @login_required(login_url='/login/')
 def weather(request):
     print os.path.basename(__file__)+"in weather function"
     if request.method == 'GET':
-        #Get current weather data from wunderground
-        json_file = open(os.path.join(settings_tornado.PROJECT_DIR, 'resources/metadata/bemoss_metadata.json'), "r+")
-        _json_data = json.load(json_file)
-        zipcode = _json_data['building_location_zipcode']
-        json_file.close()
-
-        rs = {}
-        try:
-            rs = urllib2.urlopen("http://api.wunderground.com/api/4fef576e26759640/conditions/q/" + zipcode + ".json")
-        except urllib2.HTTPError, e:
-            logger.error('HTTPError = ' + str(e.code))
-        except urllib2.URLError, e:
-            logger.error('URLError = ' + str(e.reason))
-        except httplib.HTTPException, e:
-            logger.error('HTTPException = ' + str(e.message))
-        except Exception:
-            import traceback
-            logger.error('generic exception: ' + traceback.format_exc())
-        print rs
-        if rs == {}:
-            location = 'Arlington, VA (Network unavailable - showing default values)'
-            temp_f = '77'
-            humidity = '10%'
-            precip = '0.0'
-            winds = '1.0'
-            icon = 'mostlysunny'
-            weather = 'Sunny'
-        else:
-            json_string = rs.read()
-            try:
-                parsed_json = json.loads(json_string)
-                location = parsed_json['current_observation']['display_location']['full']
-                temp_f = parsed_json['current_observation']['temp_f']
-                humidity = parsed_json['current_observation']['relative_humidity']
-                precip = parsed_json['current_observation']['precip_1hr_in']
-                winds = parsed_json['current_observation']['wind_mph']
-                icon = str(parsed_json['current_observation']['icon'])
-                weather = parsed_json['current_observation']['weather']
-            except Exception:
-                location = 'Arlington, VA (Zipcode Error. Update settings/Contact Admin.)'
-                temp_f = '77'
-                humidity = '10%'
-                precip = '0.0'
-                winds = '1.0'
-                icon = 'mostlysunny'
-                weather = 'Sunny'
-
-        #weather_icon = SessionHelper.get_weather_icon(icon)
-        weather_icon = config_helper.get_weather_icon(icon)
-        #weather_icon = "<i class=\"" + weather_icon + "\"></i>"
-        print "icon"+weather_icon
+        weather_info = get_weather_info()
         
         jsonresult = {
-                          'locat':location,
-                          'temp_f':temp_f,
-                          'humidity':humidity,
-                          'precip':precip,
-                          'winds':winds,
-                          'icon':weather_icon,
-                          'weather':weather
+                          'locat':weather_info[0],
+                          'temp_f':weather_info[1],
+                          'humidity':weather_info[2],
+                          'precip':weather_info[3],
+                          'winds':weather_info[4],
+                          'icon':weather_info[6],
+                          'weather':weather_info[5]
                           }
         print json.dumps(jsonresult)
         if request.is_ajax():
