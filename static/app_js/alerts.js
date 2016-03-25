@@ -137,48 +137,7 @@ $(document).ready(function () {
             $(this).attr("checked", "checked");
         else if ($(this).attr("checked") == "checked")
             $(this).removeAttr("checked");
-        /*if (this.id == "Email" && $(this).attr("checked")) {
-         $("#email").removeAttr('disabled');
-         if ($("#Text").attr("checked")) {
-         if (('#phone').is(':disabled')) {
-         $("#phone").removeAttr('disabled');
-         }
-         }
-         } else {
-         $("#email").attr("disabled","disabled");
-         if ($("#Text").attr("checked")) {
-         if (('#phone').is(':disabled')) {
-         $("#phone").removeAttr('disabled');
-         }
-         }
-         }
-         if (this.id == "Text" && $(this).attr("checked")) {
-         $("#phone").removeAttr('disabled');
-         if ($("#Email").attr("checked")) {
-         if (('#email').is(':disabled')) {
-         $("#email").removeAttr('disabled');
-         }
-         }
-         } else {
-         $("#phone").attr("disabled","disabled");
-         if ($("#Email").attr("checked")) {
-         if (('#email').is(':disabled')) {
-         $("#email").removeAttr('disabled');
-         }
-         }
-         }
-         if (this.id == "BemossNotification" && $(this).attr("checked")) {
-         if ($("#Email").attr("checked")) {
-         if (('#email').is(':disabled')) {
-         $("#email").removeAttr('disabled');
-         }
-         }
-         if ($("#Text").attr("checked")) {
-         if (('#phone').is(':disabled')) {
-         $("#phone").removeAttr('disabled');
-         }
-         }
-         }*/
+
     });
 
     //Create alert ajax call
@@ -193,15 +152,7 @@ $(document).ready(function () {
         var temp_range_thresh = "-";
         var temp_time_thresh = "-";
 
-        /*
-         if (_alert == 'Custom') {
-         custom_alert = $("#custom_alert").text();
-         custom_alert_comparator = $("#custom_alert_comparator").text();
-         value = $('#alert_val').val();
-         }
-         */
-
-
+        
         if (_alert == 'ACFailure') {
 
 
