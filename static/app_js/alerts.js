@@ -51,18 +51,7 @@ $(document).ready(function () {
     $.csrftoken();
 
 
-    // Show the temperature range dropdown menu
-    $('#ACFailure').click(function (e) {
-        e.preventDefault();// prevent the default anchor functionality
-        $('#temp_range_alert').html('<p>T<sub>ambient</sub> exceeds T<sub>set</sub> by </p>'); // Reset the temperature range dropdown menu onclick
-        $('#temp_time_alert').html('in the period of');
-        $('#pr_lvl').text('Priority Level');    // Reset the priority dropdown menu onclick
-        $("#temp_range_panel").css("display", "block");
-        $("#temp_time_panel").css("display", "block");
-        $("#unit_temp").css("display", "block");
-        $("#ca_panel").css("display", "none");
 
-    });
     // Assign the li ID value to the _alert
     $('#alert_select_id li').click(function (event) {
         alert_id = $(this).attr('id');
@@ -120,15 +109,6 @@ $(document).ready(function () {
     });
 
 
-    $('#temp_range_drop_alert').click(function (event) {
-        $("#temp_range_drop_alert").removeClass('btn-danger');
-        $("#temp_range_drop_alert").addClass('btn-default');
-    });
-
-    $('#temp_time_drop_alert').click(function (event) {
-        $("#temp_time_drop_alert").removeClass('btn-danger');
-        $("#temp_time_drop_alert").addClass('btn-default');
-    });
 
 
     //Checkbox value append
@@ -137,48 +117,7 @@ $(document).ready(function () {
             $(this).attr("checked", "checked");
         else if ($(this).attr("checked") == "checked")
             $(this).removeAttr("checked");
-        /*if (this.id == "Email" && $(this).attr("checked")) {
-         $("#email").removeAttr('disabled');
-         if ($("#Text").attr("checked")) {
-         if (('#phone').is(':disabled')) {
-         $("#phone").removeAttr('disabled');
-         }
-         }
-         } else {
-         $("#email").attr("disabled","disabled");
-         if ($("#Text").attr("checked")) {
-         if (('#phone').is(':disabled')) {
-         $("#phone").removeAttr('disabled');
-         }
-         }
-         }
-         if (this.id == "Text" && $(this).attr("checked")) {
-         $("#phone").removeAttr('disabled');
-         if ($("#Email").attr("checked")) {
-         if (('#email').is(':disabled')) {
-         $("#email").removeAttr('disabled');
-         }
-         }
-         } else {
-         $("#phone").attr("disabled","disabled");
-         if ($("#Email").attr("checked")) {
-         if (('#email').is(':disabled')) {
-         $("#email").removeAttr('disabled');
-         }
-         }
-         }
-         if (this.id == "BemossNotification" && $(this).attr("checked")) {
-         if ($("#Email").attr("checked")) {
-         if (('#email').is(':disabled')) {
-         $("#email").removeAttr('disabled');
-         }
-         }
-         if ($("#Text").attr("checked")) {
-         if (('#phone').is(':disabled')) {
-         $("#phone").removeAttr('disabled');
-         }
-         }
-         }*/
+
     });
 
     //Create alert ajax call
@@ -193,23 +132,6 @@ $(document).ready(function () {
         var temp_range_thresh = "-";
         var temp_time_thresh = "-";
 
-        /*
-         if (_alert == 'Custom') {
-         custom_alert = $("#custom_alert").text();
-         custom_alert_comparator = $("#custom_alert_comparator").text();
-         value = $('#alert_val').val();
-         }
-         */
-
-
-        if (_alert == 'ACFailure') {
-
-
-            temp_range_thresh = temp_thre_value;
-
-            temp_time_thresh = temp_time_value ;
-
-        }
 
         var priority = $('#pr_lvl').text();
         var n_type = new Array();
