@@ -125,140 +125,29 @@ DISABLED_VALUES_PLUGLOAD = {"everyday": {
 THERMOSTAT_DEFAULT_SCHEDULE_NEW = {
                 "everyday": {
                     "friday": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "heat_setpoint": "72",
-                                "cool_setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "heat_setpoint": "65",
-                                "cool_setpoint": "80"
-                            }
+
                     ],
                     "monday": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "heat_setpoint": "72",
-                                "cool_setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "heat_setpoint": "65",
-                                "cool_setpoint": "80"
-                            },
-                            {
-                                "at": "1170",
-                                "id": "3",
-                                "nickname": "Period3",
-                                "heat_setpoint": "65",
-                                "cool_setpoint": "80"
-                            }
+
                     ],
                     "saturday": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "heat_setpoint": "72",
-                                "cool_setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "heat_setpoint": "65",
-                                "cool_setpoint": "80"
-                            }
+
                     ],
                     "sunday": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "heat_setpoint": "72",
-                                "cool_setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "heat_setpoint": "65",
-                                "cool_setpoint": "80"
-                            }
+
                     ],
                     "thursday": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "heat_setpoint": "72",
-                                "cool_setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "heat_setpoint": "65",
-                                "cool_setpoint": "80"
-                            }
+
                     ],
                     "tuesday": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "heat_setpoint": "72",
-                                "cool_setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "heat_setpoint": "65",
-                                "cool_setpoint": "80"
-                            }
+
                     ],
                     "wednesday": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "heat_setpoint": "72",
-                                "cool_setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "heat_setpoint": "65",
-                                "cool_setpoint": "80"
-                            }
+
                     ],
                 },
                 "holiday": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "heat_setpoint": "72",
-                                "cool_setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "heat_setpoint": "65",
-                                "cool_setpoint": "80"
-                            }
+
                     ]
             }
 
@@ -268,243 +157,68 @@ THERMOSTAT_DEFAULT_SCHEDULE = {
                 "everyday": {
                     "friday": {
                         "cool": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "80"
-                            }
+
                         ],
                         "heat": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "65"
-                            }
+
                         ]
                     },
                     "monday": {
                         "cool": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "80"
-                            }
+
+
                         ],
                         "heat": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "65"
-                            }
+
                         ]
                     },
                     "saturday": {
                         "cool": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "80"
-                            }
+
                         ],
                         "heat": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "65"
-                            }
+
                         ]
                     },
                     "sunday": {
                         "cool": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "80"
-                            }
+
                         ],
                         "heat": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "65"
-                            }
+
                         ]
                     },
                     "thursday": {
                         "cool": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "80"
-                            }
+
                         ],
                         "heat": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "65"
-                            }
+
                         ]
                     },
                     "tuesday": {
                         "cool": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "30",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "80"
-                            }
+
                         ],
                         "heat": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "65"
-                            }
+
                         ]
                     },
                     "wednesday": {
                         "cool": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "80"
-                            }
+
                         ],
                         "heat": [
-                            {
-                                "at": "420",
-                                "id": "1",
-                                "nickname": "Period1",
-                                "setpoint": "72"
-                            },
-                            {
-                                "at": "1140",
-                                "id": "2",
-                                "nickname": "Period2",
-                                "setpoint": "65"
-                            }
+
                         ]
                     }
                 },
                 "holiday": {
                     "cool": [
-                        {
-                            "at": "420",
-                            "id": "1",
-                            "nickname": "Period1",
-                            "setpoint": "72"
-                        },
-                        {
-                            "at": "1140",
-                            "id": "2",
-                            "nickname": "Period2",
-                            "setpoint": "80"
-                        }
+
                     ],
                     "heat": [
-                        {
-                            "at": "420",
-                            "id": "1",
-                            "nickname": "Period1",
-                            "setpoint": "72"
-                        },
-                        {
-                            "at": "1140",
-                            "id": "2",
-                            "nickname": "Period2",
-                            "setpoint": "65"
-                        }
+
                     ]
                 }
             }
@@ -512,150 +226,30 @@ THERMOSTAT_DEFAULT_SCHEDULE = {
 LIGHTING_DEFAULT_SCHEDULE_2HUE = {
                 "everyday": {
                     "friday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "color": "(255, 255, 255)",
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "color": "(255, 255, 255)",
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "monday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "color": "(255, 255, 255)",
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "color": "(255, 255, 255)",
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "saturday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "color": "(255, 255, 255)",
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "color": "(255, 255, 255)",
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "sunday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "color": "(255, 255, 255)",
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "color": "(255, 255, 255)",
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "thursday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "color": "(255, 255, 255)",
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "color": "(255, 255, 255)",
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "tuesday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "color": "(255, 255, 255)",
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "color": "(255, 255, 255)",
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "wednesday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "color": "(255, 255, 255)",
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "color": "(255, 255, 255)",
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ]
                 },
                 "holiday": {
                     "holiday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "color": "(255, 255, 255)",
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "color": "(255, 255, 255)",
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ]
                 }
             }
@@ -663,134 +257,30 @@ LIGHTING_DEFAULT_SCHEDULE_2HUE = {
 LIGHTING_DEFAULT_SCHEDULE_2DB_2SDB = {
                 "everyday": {
                     "friday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "monday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "saturday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "sunday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "thursday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "tuesday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "wednesday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ]
                 },
                 "holiday": {
                     "holiday": [
-                        {
-                            "at": 420,
-                            "brightness": 100,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "brightness": 0,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ]
                 }
             }
@@ -798,118 +288,31 @@ LIGHTING_DEFAULT_SCHEDULE_2DB_2SDB = {
 LIGHTING_DEFAULT_SCHEDULE_2WL = {
                 "everyday": {
                     "friday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "monday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "saturday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "sunday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "thursday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "tuesday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "wednesday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
+
                     ]
                 },
                 "holiday": {
                     "holiday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ]
                 }
             }
@@ -917,118 +320,30 @@ LIGHTING_DEFAULT_SCHEDULE_2WL = {
 PLUGLOAD_DEFAULT_SCHEDULE = {
                 "everyday": {
                     "friday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "monday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "saturday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "sunday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "thursday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "tuesday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ],
                     "wednesday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ]
                 },
                 "holiday": {
                     "holiday": [
-                        {
-                            "at": 420,
-                            "id": "1",
-                            "nickname": "Period1",
-                            "status": "ON"
-                        },
-                        {
-                            "at": 1140,
-                            "id": "2",
-                            "nickname": "Period2",
-                            "status": "OFF"
-                        }
+
                     ]
                 }
             }
