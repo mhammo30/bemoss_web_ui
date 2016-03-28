@@ -103,11 +103,10 @@ def get_weather_info():
     if zipcode == '22203' and ip_zipcode is not None:
         zipcode = ip_zipcode
 
-    # Get weather underground service key
-    wu_key = settings.WUNDERGROUND_KEY
-
     rs = {}
     try:
+        # Get weather underground service key
+        wu_key = settings.WUNDERGROUND_KEY
         rs = urllib2.urlopen("http://api.wunderground.com/api/" + wu_key + "/conditions/q/" + zipcode + ".json")
     except urllib2.HTTPError, e:
         logger.error('HTTPError = ' + str(e.code))
