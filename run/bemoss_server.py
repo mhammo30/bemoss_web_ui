@@ -99,6 +99,9 @@ def main():
             (r"/socket_lighting", LightingEventHandler),
             (r"/socket_misc", BemossMiscHandler),
             (r"/socket_identify", BemossIdentifyHandler),
+            (r"/socket_lighting_scheduler", LightingSchedulerHandler),
+            (r"/socket_plugload_scheduler", PlugloadSchedulerHandler),
+            (r"/socket_thermostat_scheduler", ThermostatSchedulerHandler),
             (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': PROJECT_DIR +
                                                                       "/static/"}),
             ('.*', tornado.web.FallbackHandler, dict(fallback=wsgi_app)),
@@ -163,7 +166,7 @@ class MainHandler(websocket.WebSocketHandler):
         print data
         zmessage = {'topic': '', 'headers': {}, 'message': ''}
         for item in data:
-            if '/agent/ui' in item:
+            if '/agent/ui' in item or '/app/ui' in item:
                 zmessage['topic'] = item
             elif 'Date' in str(item):
                 mesg = json.loads(item)
@@ -223,6 +226,17 @@ class BemossIdentifyHandler(MainHandler):
     def zmq_subscribe(self):
         self.sub_socket.setsockopt(zmq.SUBSCRIBE, '/agent/ui/identify_response/')
 
+class ThermostatSchedulerHandler(MainHandler):
+    def zmq_subscribe(self):
+        self.sub_socket.setsockopt(zmq.SUBSCRIBE, '/app/ui/thermostat_scheduler/')
+
+class PlugloadSchedulerHandler(MainHandler):
+    def zmq_subscribe(self):
+        self.sub_socket.setsockopt(zmq.SUBSCRIBE, '/app/ui/plugload_scheduler/')
+
+class LightingSchedulerHandler(MainHandler):
+    def zmq_subscribe(self):
+        self.sub_socket.setsockopt(zmq.SUBSCRIBE, '/app/ui/lighting_scheduler/')
 
 application = web.Application([
     (r"/", WebHandler),
@@ -233,6 +247,9 @@ application = web.Application([
     (r"/socket_lighting", LightingEventHandler),
     (r"/socket_misc", BemossMiscHandler),
     (r"/socket_identify", BemossIdentifyHandler),
+    (r"/socket_lighting_scheduler", LightingSchedulerHandler),
+    (r"/socket_plugload_scheduler", PlugloadSchedulerHandler),
+    (r"/socket_thermostat_scheduler", ThermostatSchedulerHandler),
 ])
 
 

@@ -184,6 +184,51 @@ $( document ).ready(function() {
     $.csrftoken();
 
 
+    var ws = new WebSocket("ws://" + window.location.host + sch_socket);
+    console.log("websocket connection established");
+     ws.onopen = function () {
+         ws.send("WS opened from html page");
+     };
+
+     ws.onmessage = function (event) {
+         var _data = event.data;
+         _data = $.parseJSON(_data);
+         var topic = _data['topic'];
+         // '/app/ui/plugload_scheduler/([0-9a-zA-Z]+)/update/response'
+         if (topic) {
+             topic = topic.split('/');
+             console.log(topic);
+             if (topic[4] == device_id && topic[5] == 'update' && topic[6] == 'response') {
+                 var message_upd = _data['message'];
+                 var popup = false;
+                 if ($.type( _data['message'] ) === "string"){
+                    if (message_upd.indexOf('success') > -1) {
+                        popup = true
+                        }
+                 } else if ($.type( _data['message'] ) === "object") {
+                    if (message_upd['message'].indexOf('success') > -1){
+                        popup = true
+                        }
+                 }
+
+                 if (popup) {
+                     $('.bottom-right').notify({
+				  	    message: { text: 'The changes you made at '+update_time+" have now been updated in BEMOSS. The device will be scheduled accordingly."},
+				  	    type: 'blackgloss',
+                        fadeOut: { enabled: true, delay: 5000 }
+				  	  }).show();
+                 }else{
+                     $('.bottom-right').notify({
+				  	    message: { text: 'Failed to update changes!'},
+				  	    type: 'blackgloss',
+                        fadeOut: { enabled: true, delay: 5000 }
+				  	  }).show();
+                 }
+
+             }
+
+         }
+     };
 
     $('#activate_schedules').on('click', function(e) {
         e.preventDefault();
@@ -463,35 +508,6 @@ $( document ).ready(function() {
     });
 
 
-    function schedule_updated(data_sent){
-		var setTimeOut_schedule = setTimeout(function()
-		{
-			$.ajax({
-			  url : '/update_schedule/',
-			  type: 'POST',
-			  data : data_sent,
-			  success : function(data) {
-				var update_status = data.status;
-			  	if (update_status.indexOf("success") > -1){
-			  		stopTimer('setTimeOut_schedule');
-				  	$('.bottom-right').notify({
-				  	    message: { text: 'The changes you made at '+update_time+" have now been updated in BEMOSS. The device will be scheduled accordingly."},
-				  	    type: 'blackgloss',
-                        fadeOut: { enabled: true, delay: 5000 }
-				  	  }).show();
-			  	} else {
-                    schedule_updated(data_sent)
-
-			  	}
-			  },
-			  error: function(data) {
-
-			  }
-			 });
-		},3000);
-	}
-
-
 	function stopTimer(setTimeOut_schedule) {
 		clearInterval(setTimeOut_schedule);
 	}
@@ -588,7 +604,6 @@ $( document ).ready(function() {
 			  contentType: "application/json; charset=utf-8",
 			  dataType: 'json',
 			  success : function(data) {
-				schedule_updated(device_info);
 			  	console.log(data.heat);
 			  	$('.bottom-right').notify({
 			  	    message: { text: 'Your schedule will be updated in BEMOSS shortly.' },
