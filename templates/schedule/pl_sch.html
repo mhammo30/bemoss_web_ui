@@ -120,10 +120,14 @@
     var active_schedule = {{ active_schedule|safe }};
     var schedule_data = {{ schedule|safe }};
     var device_type_id = "{{ type }}";
+    var device_id = "{{ device_id }}";
+
     if (device_type_id == '2WL') {
         device_info = "{{device_zone}}/lighting/{{device_id}}";
+        var sch_socket = "/socket_lighting_scheduler";
     } else {
         device_info = "{{device_zone}}/plugload/{{device_id}}";
+        var sch_socket = "/socket_plugload_scheduler";
     }
 
 </script>

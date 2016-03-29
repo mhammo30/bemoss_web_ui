@@ -120,6 +120,9 @@
     var active_schedule = {{ active_schedule|safe }};
     var schedule_data = {{ schedule|safe }};
     var device_type_id = "{{ type }}";
+    var device_id = "{{ device_id }}";
+    var sch_socket = "/socket_lighting_scheduler";
+
     $(".slider").slider("float", { suffix: '%' });
 </script>
 </head>

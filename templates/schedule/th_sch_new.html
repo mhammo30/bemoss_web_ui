@@ -90,6 +90,8 @@
     var device_info = "{{device_zone}}/thermostat/{{device_id}}";
     var active_schedule = {{ active_schedule|safe }};
     var meta_schedule = {{ schedule_meta|safe }};
+    var device_id = "{{ device_id }}";
+    var sch_socket = "/socket_thermostat_scheduler";
 </script>
 </head>
 <body>
