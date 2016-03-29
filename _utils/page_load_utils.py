@@ -49,6 +49,13 @@ from apps.admin.models import NetworkStatus
 
 def get_device_list_side_navigation():
     zones = [ob.as_json() for ob in Building_Zone.objects.all()]
+    online_nodes = [ob.network_status() for ob in NetworkStatus.objects.filter(node_status='ONLINE')]
+    list_online_node = list()
+    for online_node in online_nodes:
+        list_online_node.append(online_node['device_name'])
+    for zone in zones:
+        if zone['zone_nickname'] not in list_online_node:
+            zones.remove(zone)
     thermostats_sn = [ob.data_side_nav() for ob in Thermostat.objects.filter(network_status='ONLINE',
                                                                              thermostat_id__approval_status='APR')]
     vav_sn = [ob.data_side_nav() for ob in VAV.objects.filter(network_status='ONLINE', vav_id__approval_status='APR')]
