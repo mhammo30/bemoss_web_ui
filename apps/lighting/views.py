@@ -126,7 +126,10 @@ def update_device_light(request):
             lt_color = _data['color']
             if 'a(' in str(lt_color):
                 lt_color = '(0,0,0)'
-            lt_color = eval(lt_color)
+            try:
+                lt_color = eval(lt_color)
+            except:
+                lt_color = '(0,0,0)'
             _data['color'] = lt_color
 
         _data.pop('device_info')
