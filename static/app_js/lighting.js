@@ -273,7 +273,7 @@ function submit_lighting_data(values) {
 		  	  }).show();*/
 		  },
 		  error: function(data) {
-              submit_lighting_data(values);
+              // submit_lighting_data(values);
 			  $('.bottom-right').notify({
 			  	    message: { text: 'Something went wrong when submitting the data. Please try again.' },
 			  	    type: 'blackgloss',
