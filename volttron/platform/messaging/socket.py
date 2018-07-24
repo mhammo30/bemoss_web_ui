@@ -107,6 +107,8 @@ class Socket(zmq.Socket):
         return zmq.Socket.__new__(cls, context, socket_type)
 
     def __init__(self, socket_type, context=None):
+        if not context:
+            context = zmq.Context.instance()
         super(Socket, self).__init__(self.context, socket_type)
 
     # Override send_string to ensure copy defaults to True.
